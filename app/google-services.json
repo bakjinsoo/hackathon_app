@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "286634274741",
+    "project_id": "dementia-16e77",
+    "storage_bucket": "dementia-16e77.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:286634274741:android:d215414f31ea8b6460b3fc",
+        "android_client_info": {
+          "package_name": "com.example.hackathon_app_ver_1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBWrm9z4VCJhBxcSO_0Y72LE1polTWR0vE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
