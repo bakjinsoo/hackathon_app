@@ -51,7 +51,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MainActivity extends AppCompatActivity {
 
     Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl("http://http://localhost:8080/") // 서버 URL을 입력
+            .baseUrl("http://localhost:8080/") // 서버 URL을 입력
             .addConverterFactory(GsonConverterFactory.create())
             .build();
 
@@ -274,7 +274,7 @@ public class MainActivity extends AppCompatActivity {
         RequestBody requestFile = RequestBody.create(MediaType.parse("audio/wav"), audioFile);
         MultipartBody.Part body = MultipartBody.Part.createFormData("audio", audioFile.getName(), requestFile);
 
-        ApiService apiService = RetrofitClient.getClient("http://10.0.2.2:8080/").create(ApiService.class);
+        ApiService apiService = RetrofitClient.getClient("http://202.31.147.131:8080/").create(ApiService.class);
         Call<ResponseBody> call = apiService.uploadAudio(body);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
