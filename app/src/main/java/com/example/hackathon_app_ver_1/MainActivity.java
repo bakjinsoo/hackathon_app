@@ -13,6 +13,7 @@ import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -56,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
             .build();
 
     ApiService apiService = retrofit.create(ApiService.class);
-
+    private static final String TAG = "MainActivity";
     StorageReference storageReference;
     /**xml 변수*/
     ImageButton audioRecordImageBtn;
@@ -81,22 +82,90 @@ public class MainActivity extends AppCompatActivity {
     /** 리사이클러뷰 */
     private AudioAdapter audioAdapter;
     private ArrayList<Uri> audioList;
-
+    private TextView textView;
+    private Handler handler;
+    private Runnable runnable;
+    private TranscriptApi transcriptApi;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        FirebaseApp.initializeApp(this);
+        textView = findViewById(R.id.scriptText);
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://202.31.147.131:8080/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        transcriptApi = retrofit.create(TranscriptApi.class);
+        handler=new Handler();
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                Log.d("쓰레드","쓰레드 돌아가는중");
+                transcriptsTextUpdate();
+                handler.postDelayed(this,5000);
+            }
+        };
         storageReference = FirebaseStorage.getInstance().getReference();
         init();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (handler != null && runnable != null) {
+            handler.removeCallbacks(runnable); // Remove callbacks when activity is destroyed
+        }
+    }
+
+    private void transcriptsTextUpdate() {
+        Call<Transcript> call = transcriptApi.getLatestTranscript();
+        call.enqueue(new Callback<Transcript>() {
+            @Override
+            public void onResponse(Call<Transcript> call, Response<Transcript> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    String text = response.body().getText();
+                    textView.setText(text);
+                    updateInputCheckKey(0);
+                    Log.d("API Success", "Transcript text updated");
+                } else {
+                    Log.e("API Error", "Failed to get transcript");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Transcript> call, Throwable t) {
+                Log.e("API Error", "API call failed", t);
+            }
+        });
+    }
+    private void updateInputCheckKey(int key) {
+        Call<Void> updateCall = transcriptApi.updateInputCheckKey(key);
+        updateCall.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Log.d("API Success", "InputCheck key updated to " + key);
+                } else {
+                    Log.e("API Error", "Failed to update InputCheck key. Response code: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e("API Error", "API call failed", t);
+            }
+        });
+    }
     // xml 변수 초기화
     // 리사이클러뷰 생성 및 클릭 이벤트
     private void init() {
         audioRecordImageBtn = findViewById(R.id.audioRecordImageBtn);
         audioRecordText = findViewById(R.id.audioRecordText);
-
+        if (handler != null && runnable != null) {
+            handler.post(runnable); // Register the Runnable to start
+        } else {
+            Log.e("MainActivity", "Handler or Runnable is null");
+        }
         audioRecordImageBtn.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
