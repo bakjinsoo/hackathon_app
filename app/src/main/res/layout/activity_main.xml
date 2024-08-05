@@ -7,15 +7,6 @@
     tools:context=".MainActivity">
 
     <!--녹음내역들이 담길 리사이클러뷰-->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerview"
-        android:layout_width="409dp"
-        android:layout_height="620dp"
-        app:layout_constraintBottom_toTopOf="@id/recordLayout"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0" />
 
     <!--녹음 제어 레이아웃웃-->
     <LinearLayout

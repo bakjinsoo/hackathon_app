@@ -86,13 +86,16 @@ public class MainActivity extends AppCompatActivity {
     private Handler handler;
     private Runnable runnable;
     private TranscriptApi transcriptApi;
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
+    private ImageView imageView;
+    private String currentPhotoPath;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         textView = findViewById(R.id.scriptText);
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://202.31.147.131:8080/")
+                .baseUrl("http://192.168.158.16:8080/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         transcriptApi = retrofit.create(TranscriptApi.class);
@@ -195,14 +198,11 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // 리사이클러뷰
-        RecyclerView audioRecyclerView = findViewById(R.id.recyclerview);
 
         audioList = new ArrayList<>();
         audioAdapter = new AudioAdapter(this, audioList);
-        audioRecyclerView.setAdapter(audioAdapter);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        audioRecyclerView.setLayoutManager(mLayoutManager);
 
         // 커스텀 이벤트 리스너 4. 액티비티에서 커스텀 리스너 객체 생성 및 전달
         audioAdapter.setOnItemClickListener(new AudioAdapter.OnIconClickListener() {
@@ -289,7 +289,6 @@ public class MainActivity extends AppCompatActivity {
         // 데이터 ArrayList에 담기
         audioList.add(audioUri);
         // 데이터 갱신
-        audioAdapter.notifyDataSetChanged();
         convertAndUploadAudio(audioFileName);
 
     }
@@ -343,7 +342,7 @@ public class MainActivity extends AppCompatActivity {
         RequestBody requestFile = RequestBody.create(MediaType.parse("audio/wav"), audioFile);
         MultipartBody.Part body = MultipartBody.Part.createFormData("audio", audioFile.getName(), requestFile);
 
-        ApiService apiService = RetrofitClient.getClient("http://202.31.147.131:8080/").create(ApiService.class);
+        ApiService apiService = RetrofitClient.getClient("http://192.168.158.16:8080/").create(ApiService.class);
         Call<ResponseBody> call = apiService.uploadAudio(body);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -364,20 +363,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-//    private void uploadAudioToFirebase(Uri audioUri) {
-//        StorageReference reference = storageReference.child("audios/" + UUID.randomUUID().toString() + ".wav");
-//        reference.putFile(audioUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//            @Override
-//            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                Toast.makeText(MainActivity.this, "Audio uploaded successfully!", Toast.LENGTH_SHORT).show();
-//            }
-//        }).addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception e) {
-//                Toast.makeText(MainActivity.this, "Failed to upload audio", Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//    }
 
 
 }
