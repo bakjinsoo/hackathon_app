@@ -1,7 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- 외부 저장소의 앱 전용 디렉토리에 접근할 수 있는 권한을 제공합니다. -->
-    <external-files-path
-        name="my_files"
-        path="." />
+    <external-path name="external_audio_files" path="Audio"/>
 </paths>

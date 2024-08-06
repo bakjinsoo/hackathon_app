@@ -8,12 +8,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -285,7 +287,8 @@ public class MainActivity extends AppCompatActivity {
         //      - Why? : 리사이클러뷰에 들어가는 ArrayList가 Uri를 가지기 때문
         //      - File Path를 알면 File을  인스턴스를 만들어 사용할 수 있기 때문
         String packageName = getApplicationContext().getPackageName();
-        audioUri = FileProvider.getUriForFile(MainActivity.this, packageName + ".provider", new File(audioFileName));
+        audioUri = FileProvider.getUriForFile(MainActivity.this, "com.example.hackathon_app_ver_1.audio_provider", new File(audioFileName));
+
         // 데이터 ArrayList에 담기
         audioList.add(audioUri);
         // 데이터 갱신
@@ -350,6 +353,8 @@ public class MainActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     // 업로드 성공 처리
                     Log.i("Upload", "Success");
+                    Intent intent = new Intent(MainActivity.this, PhotoActivity.class);
+                    startActivity(intent);
                 } else {
                     // 업로드 실패 처리
                     Log.i("Upload", "Failed");
@@ -363,6 +368,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
 
 
 }

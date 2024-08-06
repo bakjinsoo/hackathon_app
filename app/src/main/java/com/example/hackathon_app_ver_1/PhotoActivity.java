@@ -1,20 +1,18 @@
 package com.example.hackathon_app_ver_1;
 
+
+
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
@@ -23,100 +21,87 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
 public class PhotoActivity extends AppCompatActivity {
-
-    private ImageView imageView;
-    private String currentPhotoPath;
-    private ActivityResultLauncher<Intent> cameraLauncher;
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
+    private Uri photoURI;
+    private File photoFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo);
 
-        imageView = findViewById(R.id.imageView);
-        Button takePhotoButton = findViewById(R.id.takePhotoButton);
-
-        cameraLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == RESULT_OK) {
-                        File file = new File(currentPhotoPath);
-                        if (file.exists()) {
-                            uploadPhotoToServer(file);
-                        }
-                    }
-                }
-        );
-
-        takePhotoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dispatchTakePictureIntent();
-            }
-        });
+        Button takePictureButton = findViewById(R.id.takePhotoButton);
+        takePictureButton.setOnClickListener(v -> dispatchTakePictureIntent());
     }
 
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            File photoFile = null;
+            // Create the File where the photo should go
+            photoFile = null;
             try {
                 photoFile = createImageFile();
             } catch (IOException ex) {
+                // Error occurred while creating the File
                 Log.e("PhotoActivity", "Error occurred while creating the File", ex);
             }
+            // Continue only if the File was successfully created
             if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(this,
-                        "com.example.hackathon_app_ver_1.fileprovider",
-                        photoFile);
+                photoURI = FileProvider.getUriForFile(this, "com.example.hackathon_app_ver_1.photo_provider", photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                cameraLauncher.launch(takePictureIntent);
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                Log.i("PhotoActivity", "Photo capture intent started");
             }
+        } else {
+            Log.e("PhotoActivity", "No camera activity available to handle the intent");
         }
     }
 
     private File createImageFile() throws IOException {
+        // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
-                imageFileName,
-                ".jpg",
-                storageDir
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
         );
-        currentPhotoPath = image.getAbsolutePath();
+        // Save a file: path for use with ACTION_VIEW intents
+        Log.i("PhotoActivity", "Created image file: " + image.getAbsolutePath());
         return image;
     }
 
-    private void uploadPhotoToServer(File photoFile) {
-        RequestBody requestFile = RequestBody.create(MediaType.parse("image/jpeg"), photoFile);
-        MultipartBody.Part body = MultipartBody.Part.createFormData("photo", photoFile.getName(), requestFile);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            Log.i("PhotoActivity", "Photo capture successful, URI: " + photoURI);
+            // Show the thumbnail
+            ImageView imageView = findViewById(R.id.imageView);
+            imageView.setImageURI(photoURI);
 
-        ApiService apiService = RetrofitClient.getClient("http://192.168.158.16:8080/").create(ApiService.class);
-        Call<ResponseBody> call = apiService.uploadPhoto(body);
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
-                if (response.isSuccessful()) {
-                    Log.i("Upload", "Photo upload success");
+            // Upload photo in a new thread
+            new Thread(() -> {
+                if (photoFile != null) {
+                    uploadPhotoToServer(photoFile);
+                    runOnUiThread(() -> {
+                        Log.i("PhotoActivity", "Photo uploaded to server");
+                        // Update UI if needed
+                    });
                 } else {
-                    Log.i("Upload", "Photo upload failed");
+                    Log.e("PhotoActivity", "Photo file is null, cannot upload");
                 }
-            }
+            }).start();
+        } else {
+            Log.e("PhotoActivity", "Photo capture failed or canceled");
+        }
+    }
 
-            @Override
-            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                Log.e("Upload error:", t.getMessage());
-            }
-        });
+    private void uploadPhotoToServer(File photoFile) {
+        // Implement your upload logic here
+        Log.i("PhotoActivity", "Uploading photo to server: " + photoFile.getAbsolutePath());
     }
 }
