@@ -2,6 +2,7 @@ package com.example.hackathon_app_ver_1;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -10,6 +11,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
@@ -27,9 +32,10 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class PhotoActivity extends AppCompatActivity {
-    static final int REQUEST_TAKE_PHOTO = 1;
+
     private ImageView imageView;
     private String currentPhotoPath;
+    private ActivityResultLauncher<Intent> cameraLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +44,18 @@ public class PhotoActivity extends AppCompatActivity {
 
         imageView = findViewById(R.id.imageView);
         Button takePhotoButton = findViewById(R.id.takePhotoButton);
+
+        cameraLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK) {
+                        File file = new File(currentPhotoPath);
+                        if (file.exists()) {
+                            uploadPhotoToServer(file);
+                        }
+                    }
+                }
+        );
 
         takePhotoButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,18 +79,7 @@ public class PhotoActivity extends AppCompatActivity {
                         "com.example.hackathon_app_ver_1.fileprovider",
                         photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
-            }
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
-            File file = new File(currentPhotoPath);
-            if (file.exists()) {
-                uploadPhotoToServer(file);
+                cameraLauncher.launch(takePictureIntent);
             }
         }
     }
@@ -86,7 +93,6 @@ public class PhotoActivity extends AppCompatActivity {
                 ".jpg",
                 storageDir
         );
-
         currentPhotoPath = image.getAbsolutePath();
         return image;
     }
@@ -99,7 +105,7 @@ public class PhotoActivity extends AppCompatActivity {
         Call<ResponseBody> call = apiService.uploadPhoto(body);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
                     Log.i("Upload", "Photo upload success");
                 } else {
@@ -108,7 +114,7 @@ public class PhotoActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
                 Log.e("Upload error:", t.getMessage());
             }
         });
