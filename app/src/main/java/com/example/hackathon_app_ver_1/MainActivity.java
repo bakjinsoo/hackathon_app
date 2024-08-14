@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         textView = findViewById(R.id.scriptText);
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.0.15:8080/")
+                .baseUrl("http://202.31.147.131:8080/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         transcriptApi = retrofit.create(TranscriptApi.class);
@@ -287,7 +287,7 @@ public class MainActivity extends AppCompatActivity {
         //      - Why? : 리사이클러뷰에 들어가는 ArrayList가 Uri를 가지기 때문
         //      - File Path를 알면 File을  인스턴스를 만들어 사용할 수 있기 때문
         String packageName = getApplicationContext().getPackageName();
-        audioUri = FileProvider.getUriForFile(MainActivity.this, "com.example.hackathon_app_ver_1.audio_provider", new File(audioFileName));
+        audioUri = FileProvider.getUriForFile(MainActivity.this, packageName+".fileprovider", new File(audioFileName));
 
         // 데이터 ArrayList에 담기
         audioList.add(audioUri);
@@ -345,7 +345,7 @@ public class MainActivity extends AppCompatActivity {
         RequestBody requestFile = RequestBody.create(MediaType.parse("audio/wav"), audioFile);
         MultipartBody.Part body = MultipartBody.Part.createFormData("audio", audioFile.getName(), requestFile);
 
-        ApiService apiService = RetrofitClient.getClient("http://192.168.0.15:8080/").create(ApiService.class);
+        ApiService apiService = RetrofitClient.getClient("http://202.31.147.131:8080/").create(ApiService.class);
         Call<ResponseBody> call = apiService.uploadAudio(body);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -355,6 +355,9 @@ public class MainActivity extends AppCompatActivity {
                     Log.i("Upload", "Success");
                     Intent intent = new Intent(MainActivity.this, PhotoActivity.class);
                     startActivity(intent);
+                    if (handler != null && runnable != null) {
+                        handler.removeCallbacks(runnable); // Remove callbacks when activity is destroyed
+                    }
                 } else {
                     // 업로드 실패 처리
                     Log.i("Upload", "Failed");

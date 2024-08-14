@@ -1,0 +1,38 @@
+package com.example.hackathon_app_ver_1;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+public class SplashActivity extends AppCompatActivity {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+//        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+        super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.activity_splash);
+
+        //region REGION alternative design xml
+
+        final Handler handler = new Handler();
+        handler.postDelayed(() -> {
+            //Write whatever to want to do after delay specified (1 sec)
+            startActivity(new Intent(SplashActivity.this, MainActivity.class));
+            finish();
+        }, 1100);
+
+        //endregion
+
+//        startMainActivity();
+//        finish();
+
+    }
+
+    private void startMainActivity() {
+        Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
+}

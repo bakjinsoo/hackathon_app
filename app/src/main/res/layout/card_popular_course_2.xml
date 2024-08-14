@@ -1,0 +1,44 @@
+<androidx.cardview.widget.CardView style="@style/CardViewStyle"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:minHeight="150dp"
+    app:cardBackgroundColor="@color/color5"
+    android:layout_width="150dp"
+    android:layout_margin="@dimen/card_margin">
+
+    <!--    app:cardElevation="10dp"-->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imvCoursePhoto2"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:adjustViewBounds="true"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/calculation_icon" />
+
+        <TextView
+            android:id="@+id/tvCourseTitle2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/card_itemcourse_elevation"
+            android:layout_gravity="center"
+            android:text="숫자 맞추기\n주의 집중력"
+            android:textColor="@color/whiteTextColor"
+            android:textSize="16sp"
+
+            android:textStyle="bold"
+            android:layout_marginBottom="10dp" />
+
+
+    </LinearLayout>
+
+
+</androidx.cardview.widget.CardView>

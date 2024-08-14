@@ -11,7 +11,8 @@ public interface ApiService {
     @Multipart
     @POST("/upload")
     Call<ResponseBody> uploadAudio(@Part MultipartBody.Part audio);
+
     @Multipart
-    @POST("upload/photo")
-    Call<ResponseBody> uploadPhoto(@Part MultipartBody.Part file);
+    @POST("/upload/photo")
+    Call<ResponseBody> uploadPhoto(@Part MultipartBody.Part photo);
 }
