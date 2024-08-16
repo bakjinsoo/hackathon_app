@@ -10,7 +10,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
-        android:layout_above="@+id/takePhotoButton" />
+        android:layout_above="@+id/takePhotoButton" >
+
+        <Button
+            android:id="@+id/takePhotoButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Take Photo" />
+    </androidx.camera.view.PreviewView>
 
     <ImageView
         android:id="@+id/imageView"
@@ -20,11 +27,4 @@
         android:layout_above="@+id/takePhotoButton"
         android:visibility="gone" />
 
-    <Button
-        android:id="@+id/takePhotoButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        android:text="Take Photo" />
 </RelativeLayout>
