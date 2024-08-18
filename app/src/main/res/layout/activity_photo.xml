@@ -5,26 +5,73 @@
     android:layout_height="match_parent"
     tools:context=".PhotoActivity">
 
+    <!-- Camera Preview -->
     <androidx.camera.view.PreviewView
         android:id="@+id/previewView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_above="@+id/takePhotoButton" >
+        android:layout_above="@+id/menuBar"
+        android:layout_alignParentTop="true" />
 
+    <!-- Overlay Text -->
+    <TextView
+        android:id="@+id/overlayTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="그림을 그린 도형을 찍어주세요"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:padding="8dp" />
+
+    <!-- Menu Bar -->
+    <RelativeLayout
+        android:id="@+id/menuBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/black"
+        android:padding="8dp">
+
+        <!-- Left Button -->
+        <Button
+            android:id="@+id/leftButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Left"
+            android:layout_alignParentStart="true"
+            android:layout_marginEnd="16dp" />
+
+        <!-- Text View -->
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Text View"
+            android:textColor="@android:color/white"
+            android:layout_centerHorizontal="true" />
+
+        <!-- Right Button -->
         <Button
             android:id="@+id/takePhotoButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Take Photo" />
-    </androidx.camera.view.PreviewView>
+            android:text="Right"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="16dp" />
 
+    </RelativeLayout>
+
+    <!-- ImageView for displaying the taken photo -->
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
-        android:layout_above="@+id/takePhotoButton"
+        android:layout_above="@+id/menuBar"
         android:visibility="gone" />
+
 
 </RelativeLayout>
