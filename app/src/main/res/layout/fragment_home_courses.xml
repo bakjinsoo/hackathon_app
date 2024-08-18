@@ -101,7 +101,7 @@
                         android:src="@drawable/home_dementia_icon3" />
 
                     <ImageButton
-                        android:id="@+id/home_start_button"
+                        android:id="@+id/dementiastart"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_centerHorizontal="true"

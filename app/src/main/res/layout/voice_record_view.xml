@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/first_chapter_explain_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_marginTop="50dp"
+        android:fontFamily="@font/bmhanna_pro"
+        android:text="숫자를 읽어주세요"
+        android:textColor="#000000"
+        android:visibility="gone"
+        android:textSize="50sp" />
+    <TextView
+        android:id="@+id/first_chapter_voice_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_marginTop="100dp"
+        android:fontFamily="@font/bmhanna_pro"
+        android:visibility="gone"
+        android:text="990"
+        android:textColor="#000000"
+        android:textSize="80sp" />
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/buffer"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_marginTop="200dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        android:visibility="gone"
+        app:lottie_rawRes="@raw/buffer" />
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottie_record_button"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_marginTop="300dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/record_button_1" />
+
+
+    <TextView
+        android:id="@+id/record_exaplain_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="200dp"
+        android:fontFamily="@font/bmhanna_pro"
+        android:text="버튼을 눌러주세요!"
+        android:textSize="20sp" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lotti_line"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="200dp"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        android:visibility="gone"
+        app:lottie_rawRes="@raw/voicec_line_5" />
+
+</FrameLayout>

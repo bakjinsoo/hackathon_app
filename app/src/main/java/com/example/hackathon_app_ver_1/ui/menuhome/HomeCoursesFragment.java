@@ -1,5 +1,6 @@
 package com.example.hackathon_app_ver_1.ui.menuhome;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hackathon_app_ver_1.R;
+import com.example.hackathon_app_ver_1.VoiceRecordActivity;
 import com.example.hackathon_app_ver_1.data.CourseCardsFake;
 import com.example.hackathon_app_ver_1.databinding.FragmentHomeCoursesBinding;
 import com.example.hackathon_app_ver_1.ui.model.CourseCard;
@@ -48,7 +50,13 @@ public class HomeCoursesFragment extends Fragment implements PopularCoursesAdapt
         if (binding == null) {
             Log.e(TAG, "Binding object is null. Check if the layout file is properly set up.");
         }
-
+        binding.dementiastart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(requireContext(), VoiceRecordActivity.class);
+                startActivity(intent);
+            }
+        });
         List<CourseCard> courseCardsList;
         courseCardsList = CourseCardsFake.getInstance().getCourseCards();
 

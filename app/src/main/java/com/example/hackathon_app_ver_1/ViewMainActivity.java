@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -62,7 +63,6 @@ public class ViewMainActivity extends AppCompatActivity {
             fragmentTransaction.replace(R.id.fragment_container, homeCoursesFragment); // 여기에서 fragment_container ID를 사용
             fragmentTransaction.commit();
         }
-
         setupNavigation();
     }
 

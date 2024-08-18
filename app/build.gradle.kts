@@ -36,7 +36,7 @@ dependencies {
     val navigationVersion = "2.5.3"
     val roomVersion = "2.4.3"
     val rxJavaVersion = "2.2.21"
-
+    val lottieVersion ="5.0.3"
     implementation("com.squareup.okhttp3:okhttp:4.9.2")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.9.0")
@@ -73,5 +73,5 @@ dependencies {
     implementation("io.reactivex.rxjava2:rxandroid:2.1.1")
     implementation("io.reactivex.rxjava2:rxjava:$rxJavaVersion")
     implementation("com.jakewharton.timber:timber:5.0.1")
-
+    implementation("com.airbnb.android:lottie:$lottieVersion")
 }
