@@ -1,8 +1,12 @@
 package com.example.hackathon_app_ver_1;
 
 import android.Manifest;
+import android.animation.AnimatorSet;
+import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.net.Uri;
@@ -11,7 +15,6 @@ import android.os.Handler;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -42,8 +45,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class VoiceRecordActivity extends AppCompatActivity {
-    private static final String TAG = "VoiceRecordActivity";
+public class SecondVoiceRecordActivity extends AppCompatActivity {
+    private static final String TAG = "SecondVoiceRecordActivity";
     StorageReference storageReference;
     /**xml 변수*/
     ImageButton audioRecordImageBtn;
@@ -51,9 +54,10 @@ public class VoiceRecordActivity extends AppCompatActivity {
     LottieAnimationView recordButton;
     LottieAnimationView bufferView;
     LottieAnimationView lineView;
-    TextView textView;
-    TextView first_chapter_explain_view;
-    TextView first_chapter_voice_view;
+    TextView second_record_exaplain_view;
+    TextView second_chapter_explain_view;
+    TextView second_chapter_voice_view;
+    TextView timerText;
     /**오디오 파일 관련 변수*/
     // 오디오 권한
     private String recordPermission = Manifest.permission.RECORD_AUDIO;
@@ -76,30 +80,24 @@ public class VoiceRecordActivity extends AppCompatActivity {
     private Handler handler;
     private Runnable runnable;
     private TranscriptApi transcriptApi;
-    private static final int REQUEST_IMAGE_CAPTURE = 1;
-    private ImageView imageView;
-    private String currentPhotoPath;
-
     private Handler countdown_second_Handler;
     private Runnable countdownRunnable;
-    private int countdownValue = 990; // 카운트다운 시작 값
-    private static final int COUNTDOWN_INTERVAL = 3000; // 3초 간격
     private static final int COUNTDOWN_DURATION = 30 * 1000; // 30초 (밀리초)
     private long startTime;
     private boolean isCountdownRunning = false;
-
-
-
+    private CircleProgressBar circleProgressBar;
+    private int countdownValue = 30;
+    private int timeLeft = 30;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.voice_record_view);
+        setContentView(R.layout.activity_second_voice_record);
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://172.30.1.34:8080/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         transcriptApi = retrofit.create(TranscriptApi.class);
-        handler=new Handler();
+        handler = new Handler();
         runnable = new Runnable() {
             @Override
             public void run() {
@@ -126,7 +124,7 @@ public class VoiceRecordActivity extends AppCompatActivity {
             public void onResponse(Call<Transcript> call, Response<Transcript> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     String text = response.body().getText();
-                    textView.setText(text);
+                    second_record_exaplain_view.setText(text);
                     updateInputCheckKey(0);
                     Log.d("API Success", "Transcript text updated");
                 } else {
@@ -140,6 +138,7 @@ public class VoiceRecordActivity extends AppCompatActivity {
             }
         });
     }
+
     private void updateInputCheckKey(int key) {
         Call<Void> updateCall = transcriptApi.updateInputCheckKey(key);
         updateCall.enqueue(new Callback<Void>() {
@@ -158,31 +157,30 @@ public class VoiceRecordActivity extends AppCompatActivity {
             }
         });
     }
+
     // xml 변수 초기화
     // 리사이클러뷰 생성 및 클릭 이벤트
     private void init() {
-        audioRecordImageBtn = findViewById(R.id.audioRecordImageBtn);
-        audioRecordText = findViewById(R.id.audioRecordText);
-        recordButton = findViewById(R.id.lottie_record_button);
-        bufferView = findViewById(R.id.buffer);
-        lineView = findViewById(R.id.lotti_line);
-        textView = findViewById(R.id.record_exaplain_view);
-        first_chapter_explain_view=findViewById(R.id.first_chapter_explain_view);
-        first_chapter_voice_view=findViewById(R.id.first_chapter_voice_view);
+        recordButton = findViewById(R.id.lottie_second_record_button);
+        bufferView = findViewById(R.id.second_buffer);
+        lineView = findViewById(R.id.lottie_second_line);
+        second_record_exaplain_view = findViewById(R.id.second_record_exaplain_view); // 이 부분을 확인하세요
+        second_chapter_explain_view = findViewById(R.id.second_chapter_explain_view);
+        timerText = findViewById(R.id.second_timer_text);
+        circleProgressBar = findViewById(R.id.second_custom_progressBar);
         if (handler != null && runnable != null) {
             handler.post(runnable); // Register the Runnable to start
         } else {
-            Log.e("MainActivity", "Handler or Runnable is null");
+            Log.e("SecondVoiceRecordActivity", "Handler or Runnable is null");
         }
         recordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isRecording) {
+                if (isRecording) {
                     // 현재 녹음 중 O
                     // 녹음 상태에 따른 변수 아이콘 & 텍스트 변경
                     isRecording = false; // 녹음 상태 값
                     stopRecording();
-                    stopCountdown();
                     // 녹화 이미지 버튼 변경 및 리코딩 상태 변수값 변경
                 } else {
                     // 현재 녹음 중 X
@@ -190,16 +188,20 @@ public class VoiceRecordActivity extends AppCompatActivity {
                      *       1. Audio 권한 체크
                      *       2. 처음으로 녹음 실행한건지 여부 확인
                      * */
-                    if(checkAudioPermission()) {
+                    if (checkAudioPermission()) {
                         // 녹음 상태에 따른 변수 아이콘 & 텍스트 변경
                         bufferView.setVisibility(View.VISIBLE);
                         lineView.setVisibility(View.VISIBLE);
-                        first_chapter_explain_view.setVisibility(View.VISIBLE);
-                        first_chapter_voice_view.setVisibility(View.VISIBLE);
+                        timerText.setVisibility(View.VISIBLE);
+                        circleProgressBar.setVisibility(View.VISIBLE);
+                        second_chapter_explain_view.setVisibility(View.VISIBLE);
                         isRecording = true; // 녹음 상태 값
-                        textView.setText("녹음 중...");
-                        startRecording();
+                        second_record_exaplain_view.setText("녹음 중...");
+                        ObjectAnimator animator = ObjectAnimator.ofFloat(circleProgressBar, "progress", 100f, 0f);
+                        animator.setDuration(30000); // 30초 동안 애니메이션 실행
+                        animator.start();
                         startCountdown();
+                        startRecording();
                     }
                 }
             }
@@ -226,9 +228,9 @@ public class VoiceRecordActivity extends AppCompatActivity {
 
                 File file = new File(uriName);
 
-                if(isPlaying){
+                if (isPlaying) {
                     // 음성 녹화 파일이 여러개를 클릭했을 때 재생중인 파일의 Icon을 비활성화(비 재생중)으로 바꾸기 위함.
-                    if(playIcon == (ImageView)view){
+                    if (playIcon == (ImageView) view) {
                         // 같은 파일을 클릭했을 경우
                         stopAudio();
                     } else {
@@ -237,11 +239,11 @@ public class VoiceRecordActivity extends AppCompatActivity {
                         stopAudio();
 
                         // 새로 파일 재생하기
-                        playIcon = (ImageView)view;
+                        playIcon = (ImageView) view;
                         playAudio(file);
                     }
                 } else {
-                    playIcon = (ImageView)view;
+                    playIcon = (ImageView) view;
                     playAudio(file);
                 }
             }
@@ -264,7 +266,7 @@ public class VoiceRecordActivity extends AppCompatActivity {
         String recordPath = getExternalFilesDir("/").getAbsolutePath();
         // 파일 이름 변수를 현재 날짜가 들어가도록 초기화. 그 이유는 중복된 이름으로 기존에 있던 파일이 덮어 쓰여지는 것을 방지하고자 함.
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        audioFileName = recordPath + "/" +"RecordExample_" + timeStamp + "_"+"audio.mp4";
+        audioFileName = recordPath + "/" + "SecondRecordExample_" + timeStamp + "_" + "audio.mp4";
 
         //Media Recorder 생성 및 설정
         mediaRecorder = new MediaRecorder();
@@ -293,7 +295,7 @@ public class VoiceRecordActivity extends AppCompatActivity {
         //      - Why? : 리사이클러뷰에 들어가는 ArrayList가 Uri를 가지기 때문
         //      - File Path를 알면 File을  인스턴스를 만들어 사용할 수 있기 때문
         String packageName = getApplicationContext().getPackageName();
-        audioUri = FileProvider.getUriForFile(VoiceRecordActivity.this, packageName+".fileprovider", new File(audioFileName));
+        audioUri = FileProvider.getUriForFile(SecondVoiceRecordActivity.this, packageName + ".fileprovider", new File(audioFileName));
 
         // 데이터 ArrayList에 담기
         audioList.add(audioUri);
@@ -332,6 +334,7 @@ public class VoiceRecordActivity extends AppCompatActivity {
         isPlaying = false;
         mediaPlayer.stop();
     }
+
     private void convertAndUploadAudio(String inputFilePath) {
         String outputFilePath = inputFilePath.replace(".mp4", ".wav");
 
@@ -346,20 +349,21 @@ public class VoiceRecordActivity extends AppCompatActivity {
             }
         });
     }
+
     private void uploadAudioToServer(String filePath) {
         File audioFile = new File(filePath);
         RequestBody requestFile = RequestBody.create(MediaType.parse("audio/wav"), audioFile);
         MultipartBody.Part body = MultipartBody.Part.createFormData("audio", audioFile.getName(), requestFile);
 
         ApiService apiService = RetrofitClient.getClient("http://172.30.1.34:8080/").create(ApiService.class);
-        Call<ResponseBody> call = apiService.uploadAudio(body);
+        Call<ResponseBody> call = apiService.uploadSecondAudio(body);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
                     // 업로드 성공 처리
                     Log.i("Upload", "Success");
-                    Intent intent = new Intent(VoiceRecordActivity.this, PTDExplainActivity.class);
+                    Intent intent = new Intent(SecondVoiceRecordActivity.this, ResultViewActivity.class);
                     startActivity(intent);
                     finish();
                     if (handler != null && runnable != null) {
@@ -378,43 +382,67 @@ public class VoiceRecordActivity extends AppCompatActivity {
             }
         });
     }
-    private void startCountdown() {
-        countdown_second_Handler = new Handler();
-        startTime = System.currentTimeMillis(); // 카운트다운 시작 시간 기록
 
-        countdownRunnable = new Runnable() {
+
+    private void animateTextView() {
+        // 텍스트 색상 변경
+        timerText.setTextColor(Color.RED);
+
+        // 텍스트 크기 애니메이션 (커졌다가 줄어들기)
+        ObjectAnimator scaleX = ObjectAnimator.ofFloat(timerText, "scaleX", 1.5f, 1f);
+        ObjectAnimator scaleY = ObjectAnimator.ofFloat(timerText, "scaleY", 1.5f, 1f);
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.playTogether(scaleX, scaleY);
+        animatorSet.setDuration(500); // 애니메이션 지속 시간
+        animatorSet.start();
+    }
+
+    private void animateCircleProgressBar() {
+        // CircleProgressBar 두께 변경
+        ObjectAnimator thicknessAnimator = ObjectAnimator.ofFloat(circleProgressBar, "strokeWidth", 16f, 32f, 16f);
+        thicknessAnimator.setDuration(500); // 두께 애니메이션 지속 시간
+
+        // CircleProgressBar 색상 변경
+        ObjectAnimator colorAnimator = ObjectAnimator.ofInt(circleProgressBar, "color", circleProgressBar.getColor(), Color.RED);
+        colorAnimator.setEvaluator(new ArgbEvaluator());
+        colorAnimator.setDuration(500); // 색상 애니메이션 지속 시간
+
+        // AnimatorSet을 사용해 두께와 색상 애니메이션 동시에 실행
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.playTogether(thicknessAnimator, colorAnimator);
+        animatorSet.start();
+    }
+    private void startCountdown() {
+        // 카운트다운 설정
+        timeLeft = 30; // 30초로 초기화
+        timerText.setText(String.valueOf(timeLeft));
+
+        ObjectAnimator animator = ObjectAnimator.ofFloat(circleProgressBar, "progress", 100f, 0f);
+        animator.setDuration(30000); // 30초 동안 애니메이션 실행
+        animator.start();
+
+        handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                long elapsedTime = System.currentTimeMillis() - startTime; // 경과 시간
-                if (elapsedTime < COUNTDOWN_DURATION) {
-                    // 카운트다운이 30초 이하일 경우
-                    countdownValue = 990 - (int)(elapsedTime / COUNTDOWN_INTERVAL); // 3초마다 1씩 감소
-                    first_chapter_voice_view.setText(String.valueOf(countdownValue));
-                    countdown_second_Handler.postDelayed(this, COUNTDOWN_INTERVAL); // 3초 후 다시 호출
+                if (timeLeft > 0) {
+                    timeLeft--;
+                    timerText.setText(String.valueOf(timeLeft));
+
+                    if (timeLeft <= 10) {
+                        animateTextView();
+                        animateCircleProgressBar();
+                    }
+
+                    handler.postDelayed(this, 1000); // 1초마다 반복
                 } else {
-                    // 카운트다운 종료
-                    first_chapter_voice_view.setVisibility(View.INVISIBLE);
-                    first_chapter_explain_view.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
-                    first_chapter_explain_view.setText("1단계가 끝났습니다.\n버튼을 한번 더 눌러주세요.");
-                    isCountdownRunning = false;
+                    // 카운트다운 종료 시 녹음 중지
+                    stopRecording();
+                    // PTDDrawActivity로 전환
+                    Intent intent = new Intent(SecondVoiceRecordActivity.this, PTDDrawActivity.class);
+                    startActivity(intent);
+                    finish();
                 }
             }
-        };
-
-        // 카운트다운 시작
-        if (!isCountdownRunning) {
-            countdown_second_Handler.post(countdownRunnable);
-            isCountdownRunning = true;
-        }
+        }, 1000);
     }
-
-
-    private void stopCountdown() {
-        if (countdown_second_Handler != null && countdownRunnable != null) {
-            countdown_second_Handler.removeCallbacks(countdownRunnable);
-        }
-        isCountdownRunning = false;
-    }
-
-
 }

@@ -1,11 +1,15 @@
 package com.example.hackathon_app_ver_1;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
-import android.widget.Button;
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -38,6 +42,7 @@ import retrofit2.Response;
 public class PhotoActivity extends AppCompatActivity {
     private PreviewView previewView;
     private ImageCapture imageCapture;
+    private ImageView imageView;
     private String currentPhotoPath;
 
     private static final int REQUEST_PERMISSION = 1;
@@ -48,9 +53,12 @@ public class PhotoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_photo);
 
         previewView = findViewById(R.id.previewView);
-        Button takePhotoButton = findViewById(R.id.takePhotoButton);
+        ImageButton cameraButton = findViewById(R.id.cameraButton);
+        imageView = findViewById(R.id.imageView);
+        TextView overlayTextView = findViewById(R.id.overlayTextView);
 
-        takePhotoButton.setOnClickListener(v -> takePhoto());
+        // Set click listener for the camera button
+        cameraButton.setOnClickListener(v -> takePhoto());
 
         checkPermissions();
     }
@@ -124,6 +132,7 @@ public class PhotoActivity extends AppCompatActivity {
                 new ImageCapture.OnImageSavedCallback() {
                     @Override
                     public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
+                        displayTakenPhoto(photoFile);
                         uploadPhotoToServer(photoFile);
                     }
 
@@ -152,17 +161,27 @@ public class PhotoActivity extends AppCompatActivity {
         return image;
     }
 
+    private void displayTakenPhoto(File photoFile) {
+        // Load the image into the ImageView and make it visible
+        imageView.setImageURI(android.net.Uri.fromFile(photoFile));
+        imageView.setVisibility(View.VISIBLE);
+    }
+
     private void uploadPhotoToServer(File photoFile) {
         RequestBody requestFile = RequestBody.create(MediaType.parse("image/jpeg"), photoFile);
         MultipartBody.Part body = MultipartBody.Part.createFormData("photo", photoFile.getName(), requestFile);
 
-        ApiService apiService = RetrofitClient.getClient("http://202.31.147.131:8080/").create(ApiService.class);
+        ApiService apiService = RetrofitClient.getClient("http://172.30.1.34:8080/").create(ApiService.class);
         Call<ResponseBody> call = apiService.uploadPhoto(body);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
                     Log.i("Upload", "Photo upload success");
+                    Intent intent = new Intent(PhotoActivity.this, SecondVoiceRecordActivity.class);
+                    intent.putExtra("photoPath", currentPhotoPath);
+                    startActivity(intent);
+                    finish();
                 } else {
                     try {
                         Log.e("Upload", "Photo upload failed. Error: " + response.errorBody().string());

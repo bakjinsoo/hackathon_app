@@ -35,7 +35,10 @@
         <activity
             android:name=".PhotoActivity"
             android:exported="true">
-
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
         </activity>
         <activity android:name=".ViewMainActivity"
             android:exported="true">
@@ -46,6 +49,26 @@
         </activity>
         <activity
             android:name=".VoiceRecordActivity"
+            android:exported="true">
+        </activity>
+        <activity android:name=".PTDExplainActivity"
+            android:exported="true">
+        </activity>
+        <activity android:name=".SecondVoiceRecordActivity"
+            android:exported="true">
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+        </activity>
+        <activity android:name=".ResultViewActivity"
+            android:exported="true">
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+        </activity>
+        <activity android:name=".PTDDrawActivity"
             android:exported="true">
         </activity>
 

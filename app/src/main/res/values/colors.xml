@@ -20,7 +20,7 @@
     <color name="contentTextColor">#020000</color>
     <color name="bottomNavigationBackground">#F7F7F7</color>
 
-
+    <color name="blue">#366BFC</color>
 
     <!--    color items-->
     <color name="color1">#F1755B</color>
@@ -52,5 +52,17 @@
 
     <color name="colorPrimaryText">@android:color/white</color>
 
+    <color name="empty">#ffc1c1</color>
+    <color name="progress">#8c9eff</color>
+    <color name="progress_click">#bbdefb</color>
+    <color name="pin_background">#2c2c65</color>
+    <color name="pin_text">#8c8c8c</color>
+    <color name="bar_title_color">#000000</color>
+    <color name="bar_title_selected_color">#FFFFFF</color>
+    <color name="bar_title_txt_selected_color">#eaa</color>
+    <color name="progress_disable">@android:color/darker_gray</color>
+    <color name="result_yellow">#fcec80</color>
+    <color name="result_green">#aaca7b</color>
+    <color name="result_red">#e55b54</color>
 
 </resources>

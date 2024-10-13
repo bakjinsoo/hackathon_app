@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottie_draw"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_marginTop="100dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/draw_anim" />
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottie_draw_loading"
+        android:layout_width="400dp"
+        android:layout_height="200dp"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_marginTop="300dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/draw_load_anim" />
+    <TextView
+        android:id="@+id/record_exaplain_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="200dp"
+        android:fontFamily="@font/bmhanna_pro"
+        android:text="기억한 그림을 그려주세요!"
+        android:textSize="36sp"
+        android:textColor="#000000"/>
+    <Button
+        android:id="@+id/draw_load_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="130dp"
+        android:background="@drawable/button_background"
+        android:fontFamily="@font/bmhanna_pro"
+        android:textSize="24sp"
+        android:text="업로드" />
+
+
+</FrameLayout>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -24,6 +25,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
+        android:fontFamily="@font/bmhanna_pro"
         android:padding="8dp" />
 
     <!-- Menu Bar -->
@@ -33,34 +35,19 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="@android:color/black"
-        android:padding="8dp">
+        android:padding="20dp">
 
-        <!-- Left Button -->
-        <Button
-            android:id="@+id/leftButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Left"
-            android:layout_alignParentStart="true"
-            android:layout_marginEnd="16dp" />
+        <!-- Centered Camera Button -->
+        <ImageButton
+            android:id="@+id/cameraButton"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/camerabutton"
+            android:layout_centerHorizontal="true"
+        android:background="@drawable/circle_background"
+        android:padding="8dp"
+        android:scaleType="centerInside"/>
 
-        <!-- Text View -->
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Text View"
-            android:textColor="@android:color/white"
-            android:layout_centerHorizontal="true" />
-
-        <!-- Right Button -->
-        <Button
-            android:id="@+id/takePhotoButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Right"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="16dp" />
 
     </RelativeLayout>
 

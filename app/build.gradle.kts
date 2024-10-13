@@ -74,4 +74,5 @@ dependencies {
     implementation("io.reactivex.rxjava2:rxjava:$rxJavaVersion")
     implementation("com.jakewharton.timber:timber:5.0.1")
     implementation("com.airbnb.android:lottie:$lottieVersion")
+
 }

@@ -98,7 +98,7 @@
                         android:cropToPadding="true"
                         android:elevation="@dimen/card_image_elevation"
                         android:background="@android:color/transparent"
-                        android:src="@drawable/home_dementia_icon3" />
+                        android:src="@drawable/home_dementia_icon4" />
 
                     <ImageButton
                         android:id="@+id/dementiastart"

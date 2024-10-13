@@ -4,70 +4,86 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <com.example.hackathon_app_ver_1.CircleProgressBar
+        android:id="@+id/second_custom_progressBar"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_gravity="top|center_horizontal"
+        app:progress="100"
+        android:visibility="gone"
+        android:layout_marginTop="40dp"
+        app:progressBarThickness="8dp"/>
+
     <TextView
-        android:id="@+id/first_chapter_explain_view"
+        android:id="@+id/second_timer_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="top|center_horizontal"
         android:layout_marginTop="50dp"
         android:fontFamily="@font/bmhanna_pro"
-        android:text="숫자를 읽어주세요"
-        android:textColor="#000000"
+        android:text="30"
+        android:textSize="80sp"
         android:visibility="gone"
-        android:textSize="50sp" />
+        android:textColor="#000000"
+        android:textStyle="bold"/>
+
     <TextView
-        android:id="@+id/first_chapter_voice_view"
+        android:id="@+id/second_chapter_explain_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="top|center_horizontal"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="250dp"
         android:fontFamily="@font/bmhanna_pro"
-        android:visibility="gone"
-        android:text="990"
+        android:text="주어진 카테고리\n\n동물"
         android:textColor="#000000"
-        android:textSize="80sp" />
+        android:textSize="28sp"
+        android:visibility="gone"
+        android:textAlignment="center"/>
+
+
+
     <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/buffer"
+        android:id="@+id/second_buffer"
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_gravity="top|center_horizontal"
-        android:layout_marginTop="200dp"
+        android:layout_marginTop="320dp"
         android:clickable="true"
         android:focusable="true"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
         android:visibility="gone"
         app:lottie_rawRes="@raw/buffer" />
+
     <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/lottie_record_button"
+        android:id="@+id/lottie_second_record_button"
         android:layout_width="250dp"
         android:layout_height="250dp"
         android:layout_gravity="top|center_horizontal"
-        android:layout_marginTop="300dp"
+        android:layout_marginTop="370dp"
         android:clickable="true"
         android:focusable="true"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
         app:lottie_rawRes="@raw/record_button_1" />
 
-
     <TextView
-        android:id="@+id/record_exaplain_view"
+        android:id="@+id/second_record_exaplain_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_horizontal"
-        android:layout_marginBottom="200dp"
+        android:layout_marginBottom="130dp"
         android:fontFamily="@font/bmhanna_pro"
         android:text="버튼을 눌러주세요!"
         android:textSize="20sp"
-        android:textColor="#000000"/>
+        android:textColor="#000000" />
 
     <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/lotti_line"
+        android:id="@+id/lottie_second_line"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="200dp"
+        android:layout_marginTop="270dp"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
         android:visibility="gone"

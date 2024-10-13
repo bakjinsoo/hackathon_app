@@ -13,8 +13,9 @@ buildscript {
 }
 //allprojects {
 //    repositories {
-//        //google()
-//        mavenCentral() // or jcenter()
+////        google()
+////        mavenCentral()
+//        maven(url = "https://jitpack.io")
 //    }
 //}
 plugins {
