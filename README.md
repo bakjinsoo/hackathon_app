@@ -1,4 +1,3 @@
-치매 조기 진단 어플리케이션 실행 영상
+치매 조기 진단 어플리케이션
 
-![Uploading 해커톤 11회 시연영상 (1).gif…]()
-
+https://github.com/user-attachments/assets/69a9088c-8de6-48bb-a5fc-2e329456e1b2
